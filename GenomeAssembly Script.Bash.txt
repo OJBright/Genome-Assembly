@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Define input files and output directories
+RAW_READS="path/to/your/raw_reads.fastq"
+TRIMMED_READS="path/to/your/trimmed_reads.fastq"
+ASSEMBLY_OUTPUT_DIR="path/to/your/assembly_output"
+
+# Step 1: Quality control with FastQC
+fastqc ${RAW_READS} -o ./fastqc_output
+
+# Step 2: Trimming reads with Trimmomatic
+trimmomatic SE -phred33 \
+  ${RAW_READS} \
+  ${TRIMMED_READS} \
+  ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 \
+  LEADING:3 TRAILING:3 \
+  SLIDINGWINDOW:4:15 \
+  MINLEN:36
+
+# Step 3: De novo assembly with SPAdes
+spades.py -s ${TRIMMED_READS} -o ${ASSEMBLY_OUTPUT_DIR}
+
+# End of script
+
+Please note: You’ll need to replace path/to/your/raw_reads.fastq with the actual path to your FASTQ file and similarly update paths for trimmed reads and output directory. Also, ensure that fastqc, trimmomatic, and SPAdes are installed and properly configured on your system.
