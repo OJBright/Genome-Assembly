@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Path to the Bismark executables
+BISMARK_PATH="/path/to/Bismark"
+
+# Path to the directory containing the reference genome
+GENOME_PATH="/path/to/your/directory"
+
+# Path to the directory containing the fastq files
+FASTQ_PATH="/path/to/your/directory"
+
+# Output directory
+OUTPUT_DIR="/path/to/your/directory"
+
+# Loop over all fastq files in the directory
+for file in $FASTQ_PATH/*.fastq
+do
+    # Extract the base name of the file
+    base=$(basename $file .fastq)
+
+    # Run Bismark
+    $BISMARK_PATH/bismark --genome $GENOME_PATH --output_dir $OUTPUT_DIR --basename $base $file
+
+    # Extract methylation data
+    $BISMARK_PATH/bismark_methylation_extractor --output $OUTPUT_DIR --gzip --bedGraph --comprehensive $OUTPUT_DIR/${base}_bismark_bt2.bam
+done
